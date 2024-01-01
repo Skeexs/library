@@ -37,3 +37,20 @@ function Framework:GetPlayer(playerId)
 
     return self.player;
 end
+
+function Framework:GetCitizen(citizenId)
+    local citizen = {};
+
+    setmetatable(citizen, self);
+    self.__index = self;
+
+    if GetResourceState('qb-core') == "started" then
+        self.citizen = self.base.GetPlayerByCitizenId(citizenId);
+    elseif GetResourceState('es_extended') == "started" then
+        self.citizen = self.base.GetPlayerFromIdentifier(citizenId);
+    elseif GetResourceState(Config.ResourceBaseName) == "started" then
+        self.citizen = Config.GetCitizenObject(citizenId);
+    end
+
+    return self.citizen;
+end

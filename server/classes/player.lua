@@ -74,3 +74,13 @@ function Player:removeCash(amount)
 
     return self.cash;
 end
+
+function Player:hasMoney(amount)
+    if (GetResourceState('qb-core') == "started") then
+        return self.dummy.Functions.GetMoney('cash').money >= amount;
+    elseif (GetResourceState('es_extended') == "started") then
+        return self.dummy.getMoney() >= amount;
+    end
+
+    return false;
+end

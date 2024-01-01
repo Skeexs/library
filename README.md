@@ -4,7 +4,7 @@
 
 ```lua
 -- Importing framework, this works just as importing esx or QB for example.
-local Base = Framework:Get();
+Base = Framework:Get();
 ```
 
 ## Usage (Server)
@@ -13,7 +13,7 @@ local Base = Framework:Get();
 
 ```lua
 -- Importing framework, this works just as importing esx or QB for example.
-local Base = Framework:Get();
+Base = Framework:Get();
 
 -- Creating events
 RegisterNetEvent("tryRemoveMoney", function(amount)

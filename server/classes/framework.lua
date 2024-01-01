@@ -1,4 +1,8 @@
-Framework = {};
+Framework = {
+    __index = Framework,
+    base = {},
+    player = {}
+};
 
 function Framework:Get()
     local currentFramework = {};
@@ -7,24 +11,29 @@ function Framework:Get()
     self.__index = self;
 
     if GetResourceState('qb-core') == "started" then
-        self = exports['qb-core']:GetFrameworkObject();
+        self.base = exports['qb-core']:GetCoreObject();
     elseif GetResourceState('es_extended') == "started" then
-        self = exports['es_extended']:getSharedObject();
+        self.base = exports['es_extended']:getSharedObject();
     elseif GetResourceState(Config.ResourceBaseName) == "started" then
-        self = Config.GetFrameworkObject();
+        self.base = Config.GetFrameworkObject();
     end
 
     return self;
 end
 
-function Framework:GetPlayerObject(playerId)
+function Framework:GetPlayer(playerId)
+    local player = {};
+
+    setmetatable(player, self);
+    self.__index = self;
+
     if GetResourceState('qb-core') == "started" then
-        return self.Functions.GetPlayer(playerId);
+        self.player = self.base.GetPlayer(playerId);
     elseif GetResourceState('es_extended') == "started" then
-        return self.GetPlayerFromId(playerId);
+        self.player = self.base.GetPlayerFromId(playerId);
     elseif GetResourceState(Config.ResourceBaseName) == "started" then
-        return self.GetPlayerObject(playerId);
+        self.player = Config.GetPlayerObject(playerId);
     end
 
-    return nil;
+    return self.player;
 end

@@ -10,5 +10,7 @@ shared_scripts {
 }
 
 server_scripts {
-    'server/*.lua'
+    'server/classes/framework.lua',
+    'server/classes/player.lua',
+    'server/*.lua',
 }

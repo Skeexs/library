@@ -24,13 +24,26 @@ function Player:new(source)
         o.steamName = self.dummy.PlayerData.name;
         o.socialSecurityNumber = self.dummy.PlayerData.cid;
 
-        self.addCash = function(amount)
+        o.addCash = function(amount)
             self.dummy.Functions.AddMoney('cash', amount);
         end
 
-        self.removeCash = function(amount)
+        o.removeCash = function(amount)
             self.dummy.Functions.RemoveMoney('cash', amount);
         end
+
+        o.job = self.dummy.PlayerData.job.name;
+        o.job_grade = self.dummy.PlayerData.job.grade
+
+        print()
+
+
+
+        -- self.job_title = Core.base.Jobs[self.dummy.PlayerData.job.name].grades
+        --     [tostring(self.dummy.PlayerData.job.grade)].label;
+
+        self.firstName = self.dummy.PlayerData.charinfo.firstname;
+        self.lastName = self.dummy.PlayerData.charinfo.lastname;
     elseif Core.isESX then
         o.cash = self.dummy.getMoney();
         o.bank = self.dummy.getAccount('bank').money;

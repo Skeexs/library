@@ -17,5 +17,6 @@ server_scripts {
     'server/classes/framework.lua',
     'server/classes/citizen.lua',
     'server/classes/player.lua',
-    'server/*.lua',
+    'server/handler.lua',
+    'server/main.lua',
 }

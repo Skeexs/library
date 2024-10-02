@@ -3,7 +3,7 @@ RegisterCommand("player", function(source)
 
     print(player.cash);
     print(player.steamName)
-end)
+end, false)
 
 RegisterCommand("givecash", function(source, args)
     local player = Player:new(source) or {};

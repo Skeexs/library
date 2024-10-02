@@ -68,14 +68,14 @@ function Citizens:GetOffline(identifier)
             }
         end
 
-        return {
-            job = {
-                name       = Player.PlayerData.job.name,
-                grade      = Player.PlayerData.job.grade.level,
-                gradeLabel = QBCore.Shared.Jobs[Player.PlayerData.job.name].grades
-                    [tostring(Player.PlayerData.job.grade.level)].label or "Unknown"
-            }
+        self.job = {
+            name       = Player.PlayerData.job.name,
+            grade      = Player.PlayerData.job.grade.level,
+            gradeLabel = QBCore.Shared.Jobs[Player.PlayerData.job.name].grades
+                [tostring(Player.PlayerData.job.grade.level)].label or "Unknown"
         }
+
+        self.identifier = Player.PlayerData.license
     elseif Framework.isESX then
         local getOfflinePlayer = function()
             local query = [[
@@ -110,14 +110,24 @@ function Citizens:GetOffline(identifier)
 
         local ESX = Framework.base;
 
-        return {
-            job = {
-                name       = player.job,
-                grade      = player.job_grade,
-                gradeLabel = ESX.Jobs[player.job].grades[tostring(player.job_grade)].label or "Unknown"
-            }
+        -- return {
+        --     job = {
+        --         name       = player.job,
+        --         grade      = player.job_grade,
+        --         gradeLabel = ESX.Jobs[player.job].grades[tostring(player.job_grade)].label or "Unknown"
+        --     }
+        -- }
+
+        self.job = {
+            name       = player.job,
+            grade      = player.job_grade,
+            gradeLabel = ESX.Jobs[player.job].grades[tostring(player.job_grade)].label or "Unknown"
         }
+
+        self.identifier = player.identifier
     end
+
+    return self
 end
 
 exports('getCitizen', function(socialSecurityNumber)

@@ -31,7 +31,7 @@ function Framework:GetPlayer(playerId)
     self.__index = self;
 
     if GetResourceState('qb-core') == "started" then
-        self.player = self.base.GetPlayer(playerId);
+        self.player = self.base.Functions.GetPlayer(playerId);
     elseif GetResourceState('es_extended') == "started" then
         self.player = self.base.GetPlayerFromId(playerId);
     elseif GetResourceState(Config.ResourceBaseName) == "started" then

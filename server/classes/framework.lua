@@ -12,13 +12,16 @@ function Framework:Get()
 
     if GetResourceState('qb-core') == "started" then
         self.base = exports['qb-core']:GetCoreObject();
+        self.isQBCore = true;
     elseif GetResourceState('es_extended') == "started" then
         self.base = exports['es_extended']:getSharedObject();
+        self.isESX = true;
     elseif GetResourceState(Config.ResourceBaseName) == "started" then
         self.base = Config.GetFrameworkObject();
+        self.isCustom = true;
     end
 
-    return self;
+    return self
 end
 
 function Framework:GetPlayer(playerId)
@@ -54,3 +57,15 @@ function Framework:GetCitizen(citizenId)
 
     return self.citizen;
 end
+
+exports('getFramework', function()
+    return Framework:Get().base;
+end)
+
+-- exports('getPlayer', function(playerId)
+--     return Framework:GetPlayer(playerId);
+-- end)
+
+exports('getCitizen', function(citizenId)
+    return Framework:GetCitizen(citizenId);
+end)

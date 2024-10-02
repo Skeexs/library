@@ -6,5 +6,11 @@ RegisterCommand("player", function(source)
 end)
 
 RegisterCommand("givecash", function(source, args)
+    local player = Player:new(source) or {};
 
+    if not player then
+        return;
+    end
+
+    player.addCash(5000);
 end)

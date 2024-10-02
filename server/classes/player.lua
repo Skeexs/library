@@ -12,22 +12,47 @@ function Player:new(source)
     self.dummy = Core:GetPlayer(source);
 
     if not self.dummy then
-        return;
+        return {
+            error = "Player not found.",
+        }
     end
 
-    if (GetResourceState('qb-core') == "started") then
+    if Core.isQBCore then
         o.cash = self.dummy.PlayerData.money.cash;
         o.bank = self.dummy.PlayerData.money.bank;
         o.identifier = self.dummy.PlayerData.license
         o.steamName = self.dummy.PlayerData.name;
         o.socialSecurityNumber = self.dummy.PlayerData.cid;
-    elseif (GetResourceState('es_extended') == "started") then
+
+        self.addCash = function(amount)
+            self.dummy.Functions.AddMoney('cash', amount);
+        end
+
+        self.removeCash = function(amount)
+            self.dummy.Functions.RemoveMoney('cash', amount);
+        end
+    elseif Core.isESX then
         o.cash = self.dummy.getMoney();
         o.bank = self.dummy.getAccount('bank').money;
+
+        local jobs = Core.base.Jobs;
+
+        log:info("Mitt jobb", self.dummy.job.name, self.dummy.job.grade)
+        log:info("Mitt jobb i JSON", json.encode(jobs[self.dummy.job.name], {
+            indent = true
+        }))
+
+        o.job = self.dummy.job.name;
+        o.job_grade = self.dummy.job.grade
+        o.job_title = (jobs and jobs[o.job]) and jobs[o.job].grades[tostring(o.job_grade)].label or "Unknown";
+
         o.identifier = self.dummy.getIdentifier();
         o.steamName = GetPlayerName(source)
         o.socialSecurityNumber = self.dummy.getIdentifier();
-    elseif (GetResourceState(Config.ResourceBaseName) == "started") then
+
+        o.firstName = self.dummy.variables.firstName;
+        o.lastName = self.dummy.variables.lastName;
+    elseif Core.isCustom then
         o.cash = self.dummy.cash;
         o.bank = self.dummy.bank;
     end
@@ -35,36 +60,34 @@ function Player:new(source)
     return o;
 end
 
+function Player:retrieveSSN()
+    return self.socialSecurityNumber;
+end
+
+function Player:GetSteamName()
+    return self.steamName;
+end
+
+function Player:GetIdentifier()
+    return self.identifier;
+end
+
 function Player:Notify(message, type)
-    if (GetResourceState('qb-core') == "started") then
+    if Core.isQBCore then
         TriggerClientEvent('QBCore:Notify', self.source, message, type);
-    elseif (GetResourceState('es_extended') == "started") then
+    elseif Core.isESX then
         TriggerClientEvent('esx:showNotification', self.source, message);
-    elseif (GetResourceState(Config.ResourceBaseName) == "started") then
+    elseif Core.isCustom then
         -- self.dummy:Notify(message, type);
     end
 
     return true;
 end
 
-function Player:addCash(amount)
-    if (GetResourceState('qb-core') == "started") then
-        self.dummy.Functions.AddMoney('cash', amount);
-    elseif (GetResourceState('es_extended') == "started") then
-        self.dummy.addMoney(amount);
-    end
-
-    self.cash = self.cash + amount;
-
-    self:Notify("You have added $" .. amount .. " to your wallet.", "success");
-
-    return self.cash;
-end
-
 function Player:removeCash(amount)
-    if (GetResourceState('qb-core') == "started") then
+    if Core.isQBCore then
         self.dummy.Functions.RemoveMoney('cash', amount);
-    elseif (GetResourceState('es_extended') == "started") then
+    elseif Core.isESX then
         self.dummy.removeMoney(amount);
     end
 
@@ -76,11 +99,15 @@ function Player:removeCash(amount)
 end
 
 function Player:hasMoney(amount)
-    if (GetResourceState('qb-core') == "started") then
+    if Core.isQBCore then
         return self.dummy.Functions.GetMoney('cash').money >= amount;
-    elseif (GetResourceState('es_extended') == "started") then
+    elseif Core.isESX then
         return self.dummy.getMoney() >= amount;
     end
 
     return false;
 end
+
+exports('getPlayer', function(source)
+    return Player:new(source);
+end)

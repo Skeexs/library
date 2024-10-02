@@ -1,4 +1,5 @@
 Config = {};
+Config.Debug = false;
 
 Config.ResourceBaseName = nil -- Ändra detta till något annat ifall du använder custom framework.
 
